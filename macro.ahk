@@ -119,10 +119,11 @@ IfNotExist, settings.ini
 	defaultIni .= "[hotkeys]`n"
 	defaultIni .= "logout=```n"
 	defaultIni .= "superLogout=F12`n"
-	defaultIni .= "oos=F2`n"
+	defaultIni .= "oos=`n"
 	defaultIni .= "remaining=F3`n"
 	defaultIni .= "whois=F4`n"
 	defaultIni .= "hideout=F5`n"
+	defaultIni .= "paste_clipboard=F2`n"
 	defaultIni .= "invite=F6`n"
 	defaultIni .= "toggleOverlay=F9`n"
 	defaultIni .= "options=F10`n"
@@ -210,6 +211,7 @@ Gui, 2:Add, Text,, /Oos:
 Gui, 2:Add, Text,, /Remaining :
 Gui, 2:Add, Text,, /whois :
 Gui, 2:Add, Text,, Travel to Hideout :
+Gui, 2:Add, Text,, Paste :
 Gui, 2:Add, Text,, Invite Player :
 Gui, 2:Add, Text,, Toggle Overlay Size:
 Gui, 2:Add, Text,, Options (This GUI) :
@@ -233,6 +235,7 @@ Gui, 2:Add, Hotkey, w100 h20 vguihotkeyOos , %hotkeyOos%
 Gui, 2:Add, Hotkey, w100 h20 vguihotkeyRemaining , %hotkeyRemaining%
 Gui, 2:Add, Hotkey, w100 h20 vguihotkeyWhois , %hotkeyWhois%
 Gui, 2:Add, Hotkey, w100 h20 vguihotkeyHideout , %hotkeyHideout%
+Gui, 2:Add, Hotkey, w100 h20 vguihotkeyPaste , %hotkeyPaste%
 Gui, 2:Add, Hotkey, w100 h20 vguihotkeyInvite , %hotkeyInvite%
 Gui, 2:Add, Hotkey, w100 h20 vguihotkeyToggleOverlay , %hotkeyToggleOverlay%
 Gui, 2:Add, Hotkey, w100 h20 vguihotkeyOptions , %hotkeyOptions%
@@ -577,6 +580,17 @@ hideoutCommand:
 	SendInput, {Enter}
 	Sleep 2
 	SendInput, {/}hideout
+	SendInput, {Enter}
+	BlockInput Off
+	return
+}
+
+paste_clipboard(){
+pasteCommand:
+	BlockInput On
+	SendInput, {Enter}
+	Sleep 2
+	SendInput ^v
 	SendInput, {Enter}
 	BlockInput Off
 	return
@@ -1048,6 +1062,7 @@ updateHotkeys:
 	updsettings .= "remaining=" . guihotkeyRemaining . "`n"
 	updsettings .= "whois=" . guihotkeyWhois . "`n"
 	updsettings .= "hideout=" . guihotkeyHideout . "`n"
+	updsettings .= "paste_clipboard=" . guihotkeyPaste . "`n"
 	updsettings .= "invite=" . guihotkeyInvite . "`n"
 	updsettings .= "toggleOverlay=" . guihotkeyToggleOverlay . "`n"
 	updsettings .= "options=" . guihotkeyOptions . "`n"
@@ -1094,6 +1109,8 @@ readFromFile(){
 		Hotkey,% hotkeyWhois, whoisCommand, Off
 	If hotkeyHideout
 		Hotkey,% hotkeyHideout, hideoutCommand, Off
+	If hotkeyPaste
+		Hotkey,% hotkeyPaste, pasteCommand, Off
 	If hotkeyInvite
 		Hotkey,% hotkeyInvite, inviteCommand, Off
 	If hotkeyToggleOverlay
@@ -1175,6 +1192,7 @@ readFromFile(){
 	IniRead, hotkeyRemaining, settings.ini, hotkeys, remaining, %A_Space%
 	IniRead, hotkeyWhois, settings.ini, hotkeys, whois, %A_Space%
 	IniRead, hotkeyHideout, settings.ini, hotkeys, hideout, %A_Space%
+	IniRead, hotkeyPaste, settings.ini, hotkeys, paste_clipboard, %A_Space%
 	IniRead, hotkeyInvite, settings.ini, hotkeys, invite, %A_Space%
 	IniRead, hotkeyToggleOverlay, settings.ini, hotkeys, toggleOverlay, %A_Space%
 	IniRead, hotkeyOptions, settings.ini, hotkeys, options, %A_Space%
@@ -1205,6 +1223,8 @@ readFromFile(){
 		Hotkey,% hotkeyWhois, whoisCommand, On
 	If hotkeyHideout
 		Hotkey,% hotkeyHideout, hideoutCommand, On
+	If hotkeyPaste
+		Hotkey,% hotkeyPaste, pasteCommand, On	
 	If hotkeyInvite
 		Hotkey,% hotkeyInvite, inviteCommand, On
 	If hotkeyToggleOverlay
